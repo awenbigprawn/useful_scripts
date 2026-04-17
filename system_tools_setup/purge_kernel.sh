@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PATTERN='share-budget'
+PATTERN='budget'
 BOOT_DIR='/boot'
 MODULES_DIR='/lib/modules'
 
