@@ -193,3 +193,7 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+# codex
+#  codex is an AI-powered code search tool. `.codexignore` specifies files/directories to
+#  exclude from code search indexing. Recommended for sensitive data or irrelevant files.
+.codex
