@@ -4,26 +4,30 @@ set -eu
 MAX_PWM_DEFAULT=255
 RESTORE_ON_EXIT=0
 HWMON_DIR=""
+SCRIPT_NAME=$(basename "$0")
 
 usage() {
-  cat <<'EOF'
+  cat <<EOF
 Usage:
-  sudo ./fan_max.sh [--max <value>] [--hwmon <path>] [--restore-on-exit]
+  sudo ./$SCRIPT_NAME [--max <value>] [--hwmon <path>] [--restore-on-exit]
+
+Purpose:
+  Set detected fan PWM values to a target value, typically max speed.
 
 Options:
-  --max <value>         PWM max value to write (default: 255)
-  --hwmon <path>        Explicit hwmon path (e.g., /sys/class/hwmon/hwmon5)
-  --restore-on-exit     Restore previous pwm values when the script exits
+  --max <value>         PWM value to write (default: 255)
+  --hwmon <path>        Explicit hwmon path (example: /sys/class/hwmon/hwmon5)
+  --restore-on-exit     Restore previous PWM values when the script exits
+  -h, --help            Show this help message and exit
 
 Examples:
-  sudo ./fan_max.sh
-  sudo ./fan_max.sh --max 255
-  sudo ./fan_max.sh --hwmon /sys/class/hwmon/hwmon5
-  sudo ./fan_max.sh --restore-on-exit
+  sudo ./$SCRIPT_NAME
+  sudo ./$SCRIPT_NAME --max 255
+  sudo ./$SCRIPT_NAME --hwmon /sys/class/hwmon/hwmon5
+  sudo ./$SCRIPT_NAME --restore-on-exit
 EOF
 }
 
-# Parse args
 MAX_PWM="$MAX_PWM_DEFAULT"
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -53,13 +57,11 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-# Root check (writing to /sys requires root)
 if [ "$(id -u)" -ne 0 ]; then
   echo "ERROR: Please run as root (use sudo)." >&2
   exit 1
 fi
 
-# Auto-discover a hwmon dir if not provided
 if [ -z "$HWMON_DIR" ]; then
   for d in /sys/class/hwmon/hwmon*; do
     if [ -e "$d/pwm1" ] && [ -e "$d/pwm2" ] && [ -e "$d/fan1_input" ] && [ -e "$d/fan2_input" ]; then
@@ -97,7 +99,7 @@ trap cleanup EXIT INT TERM
 
 echo "Using HWMON_DIR=$HWMON_DIR (name=$NAME)"
 echo "Current: pwm1=$OLD_PWM1 pwm2=$OLD_PWM2"
-echo "Setting both fans to max PWM=$MAX_PWM ..."
+echo "Setting both fans to PWM=$MAX_PWM ..."
 
 echo "$MAX_PWM" > "$HWMON_DIR/pwm1"
 echo "$MAX_PWM" > "$HWMON_DIR/pwm2"
@@ -110,4 +112,3 @@ FAN2="$(cat "$HWMON_DIR/fan2_input" 2>/dev/null || echo "N/A")"
 echo "Now: pwm1=$NEW_PWM1 pwm2=$NEW_PWM2"
 echo "Fan RPM: fan1=$FAN1 fan2=$FAN2"
 echo "Done."
-

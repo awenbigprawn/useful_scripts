@@ -1,30 +1,61 @@
 #!/bin/bash
+set -euo pipefail
 
-# Define target file and the configuration line
+SCRIPT_NAME=$(basename "$0")
 FILE="/etc/modprobe.d/alsa-base.conf"
 LINE="options snd-hda-intel model=headset-mode"
 
+usage() {
+  cat <<EOF
+Usage:
+  sudo ./$SCRIPT_NAME
+
+Purpose:
+  Add an ALSA modprobe option that can improve headset detection at boot.
+
+What it changes:
+  Appends the following line to $FILE if it is not already present:
+    $LINE
+
+Options:
+  -h, --help            Show this help message and exit
+EOF
+}
+
+case "${1:-}" in
+  -h|--help)
+    usage
+    exit 0
+    ;;
+  "")
+    ;;
+  *)
+    echo "ERROR: $SCRIPT_NAME does not accept positional arguments." >&2
+    usage >&2
+    exit 2
+    ;;
+esac
+
 echo "Checking audio configuration..."
 
-# Check for root privileges
 if [ "$EUID" -ne 0 ]; then
   echo "Error: Please run this script with sudo!"
   exit 1
 fi
 
-# Create file if it does not exist
 if [ ! -f "$FILE" ]; then
     echo "File $FILE not found, creating new file..."
     touch "$FILE"
 fi
 
-# Check if the configuration already exists to avoid duplicates
 if grep -Fxq "$LINE" "$FILE"; then
     echo "Configuration already exists. No changes made."
 else
     echo "Writing configuration to $FILE..."
-    # Append the line to the end of the file
-    echo -e "\n# Fix headphone detection at boot\n$LINE" >> "$FILE"
+    printf '
+# Fix headphone detection at boot
+%s
+' "$LINE" >> "$FILE"
     echo "Done!"
 fi
 
