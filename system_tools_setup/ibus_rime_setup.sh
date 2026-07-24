@@ -120,10 +120,11 @@ printf '%s
 install_config "$RIME_DIR/luna_pinyin_simp.custom.yaml" <<'YAML'
 patch:
   speller/algebra:
-    - derive/^([a-z]+)ing$/$1in/
-    - derive/^([a-z]+)in$/$1ing/
-    - derive/^([a-z]+)eng$/$1en/
-    - derive/^([a-z]+)en$/$1eng/
+    __patch:
+      - pinyin:/abbreviation
+      - pinyin:/spelling_correction
+      - pinyin:/key_correction
+      - pinyin:/en_eng_bufen
 YAML
 
 printf '%s
