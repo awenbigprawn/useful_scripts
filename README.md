@@ -17,6 +17,7 @@
 useful_scripts/
 ├── executable_related/    # 可执行文件权限、进程优先级观察
 ├── python/                # 通用 Python 小工具
+├── raspberry_pi/          # Raspberry Pi 5 安装、直连网络与 SSH 工具
 ├── system_tools_setup/    # 系统配置与维护脚本
 └── video_transform/       # 视频格式转换脚本
 ```
@@ -71,6 +72,14 @@ pip install -U pip
 | --- | --- | --- | --- |
 | `prio_watch.sh` | 持续观察进程/线程优先级，默认筛选 `safebot` | 否 | `./executable_related/prio_watch.sh` |
 | `setcap.sh` | 给目标可执行文件添加 `cap_sys_nice` 能力 | 是 | `sudo ./executable_related/setcap.sh /path/to/bin` |
+### `raspberry_pi/`
+
+| 脚本 | 作用 | 是否需要 `sudo` | 示例 |
+| --- | --- | --- | --- |
+| `rpi5_direct_connect.sh` | 恢复笔记本 `e1000e` 网卡、配置共享网线、发现 Pi 5 并可直接 SSH | 脚本按需调用 | `./raspberry_pi/rpi5_direct_connect.sh --connect` |
+
+完整的 Ubuntu Server 烧录、直连网络、SSH、Wi-Fi、GitHub 密钥及内核抢占模型检查流程见 `raspberry_pi/README.md`。
+
 
 ### `python/`
 
@@ -96,6 +105,7 @@ pip install moviepy
 
 - `kernel_purge.sh`、`snap_remove.sh`、`nvidia_drivers_install.sh` 都会修改系统关键组件，执行前请确认目标环境和版本。
 - `fan_max.sh`、`cpu_freq_lock.sh`、`cpu_freq_default_restore.sh` 会直接写入 `/sys`，只适合明确知道机器状态时使用。
+- `rpi5_direct_connect.sh` 只在目标有线接口缺失时重载指定网卡驱动，但仍会短暂改变该驱动管理的网络设备状态。
 - `prio_watch.sh` 当前默认筛选关键字 `safebot`。如果你想看别的进程，需要先改脚本里的过滤条件。
 - `files_rename.py` 不是通用 CLI，而是一次性批处理脚本，运行前一定要检查硬编码路径。
 
