@@ -64,7 +64,7 @@ pip install -U pip
 | `nvidia_drivers_install.sh` | 屏蔽 `nouveau` 后下载并静默安装指定版本 NVIDIA 驱动 | 是 | `sudo ./system_tools_setup/nvidia_drivers_install.sh` |
 | `snap_remove.sh` | 卸载 snap 及相关残留目录，并 hold `firefox`/`snapd` | 是 | `sudo ./system_tools_setup/snap_remove.sh` |
 | `tmux_setup.sh` | 生成简洁的 `~/.tmux.conf`，开启鼠标并改前缀为 `Ctrl+a` | 否 | `./system_tools_setup/tmux_setup.sh` |
-| `window_tiling_fix.sh` | 调整 GNOME 和 Tiling Assistant 设置，减少平铺弹窗和自动分组干扰 | 否 | `./system_tools_setup/window_tiling_fix.sh` |
+| `window_tiling_fix.sh` | 关闭 Tiling Assistant 的补窗弹窗，同时保留左右半屏快捷键 | 否 | `./system_tools_setup/window_tiling_fix.sh` |
 
 ### `executable_related/`
 
